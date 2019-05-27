@@ -6,18 +6,16 @@
    Change Activity:
                    2019/5/23:
 """
+# from rest_framework_jwt.serializers import User
 from Django_project.apps.users.models import User
-from Django_project.apps.users.utils import get_user_by_account
 
 __author__ = 'gao_帅帅'
-
 import re
 
+from Django_project.apps.users.utils import get_user_by_account
 from django_redis import get_redis_connection
 from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
-
-# from users.models import User
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -107,6 +105,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
             }
         }
 
+
 class CheckSMSCodeSerializer(serializers.Serializer):
     """
     检查sms code
@@ -114,7 +113,7 @@ class CheckSMSCodeSerializer(serializers.Serializer):
     sms_code = serializers.CharField(min_length=6, max_length=6)
 
     def validate_sms_code(self, value):
-        account = self.co+ntext['view'].kwargs['account']
+        account = self.context['view'].kwargs['account']
         # 获取user
         user = get_user_by_account(account)
         if user is None:
@@ -133,8 +132,8 @@ class ResetPasswordSerializer(serializers.ModelSerializer):
     """
     重置密码序列化器
     """
-    password2 = serializers.CharField(label='确认密码',  write_only=True)
-    access_token = serializers.CharField(label='操作token',  write_only=True)
+    password2 = serializers.CharField(label='确认密码', write_only=True)
+    access_token = serializers.CharField(label='操作token', write_only=True)
 
     class Meta:
         model = User
@@ -175,4 +174,3 @@ class ResetPasswordSerializer(serializers.ModelSerializer):
         instance.set_password(validated_data['password'])
         instance.save()
         return instance
-

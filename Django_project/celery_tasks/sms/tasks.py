@@ -7,20 +7,16 @@
                    2019/5/23:
 """
 
-from Django_project.celery_tasks.main import celery_app
-from Django_project.libs.yuntongxun.sms import CCP
 
 __author__ = 'gao_帅帅'
 
-
+from Django_project.celery_tasks.main import celery_app
+from Django_project.libs.yuntongxun.sms import CCP
 import logging
-
-# from celery_tasks.main import celery_app
 from . import constants
-# from .yuntongxun.sms import CCP
+
 
 logger = logging.getLogger("django")
-
 
 @celery_app.task(name='send_sms_code')
 def send_sms_code(mobile, sms_code):

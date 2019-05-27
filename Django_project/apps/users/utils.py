@@ -7,7 +7,6 @@
                    2019/5/23:
 """
 import re
-
 from django.contrib.auth.backends import ModelBackend
 
 from Django_project.apps.users.models import User

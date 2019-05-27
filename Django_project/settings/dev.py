@@ -41,8 +41,6 @@ SECRET_KEY = 'x&pqg2=pmdak17+gu#d+d+qinecykqiqpg5gx^8rc+7^*p-hf4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
 
 # Application definition
 # from Django_project.apps import users
@@ -54,10 +52,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'django_crontab',
     'corsheaders',
     'rest_framework',
     'users.apps.UsersConfig',
     'verifications.apps.VerificationsConfig',
+    'django.contrib.sites',
+
 ]
 
 MIDDLEWARE = [
@@ -82,6 +83,7 @@ CORS_ORIGIN_WHITELIST = (
     '127.0.0.1:8000',
     'api.meiduo.com:8000'
 )
+
 # 允许携带cookie
 CORS_ALLOW_CREDENTIALS = True
 
@@ -129,6 +131,12 @@ JWT_AUTH = {
 AUTHENTICATION_BACKENDS = [
     'users.utils.UsernameMobileAuthBackend',
 ]
+
+# qq登录参数
+# QQ_CLIENT_ID = '101474184'
+# QQ_CLIENT_SECRET = 'c6ce949e04e12ecc909ae6a8b09b637c'
+# QQ_REDIRECT_URI = 'http://www.meiduo.site:8080/oauth_callback.html'
+# QQ_STATE = '/'
 
 
 WSGI_APPLICATION = 'Django_project.wsgi.application'

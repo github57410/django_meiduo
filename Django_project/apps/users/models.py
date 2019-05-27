@@ -1,16 +1,19 @@
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-# Create your models here.
-from itsdangerous import BadData
-from Django_project.settings import dev
-
+# from Django_project.settings import dev
 from Django_project.apps.users import constants
+# 在User模型类中实现使用TimedJSONWebSignatureSerializer可以生成带有有效期的token
+from itsdangerous import TimedJSONWebSignatureSerializer as TJWSSerializer, BadData
+# 导入django系统默认的配置文件
+from django.conf import settings
 
 
 class User(AbstractUser):
     """用户模型类"""
     mobile = models.CharField(max_length=11, unique=True, verbose_name='手机号')
+    # id = models.AutoField(primary_key=True)
 
     class Meta:
         db_table = 'tb_users'
@@ -47,9 +50,12 @@ class User(AbstractUser):
         生成修改密码的token
         """
         serializer = TJWSSerializer(dev.SECRET_KEY, expires_in=constants.SET_PASSWORD_TOKEN_EXPIRES)
-        data = {'user_id': self.id}
+        # 模型类
+        data = {'user_id': self.id }
         token = serializer.dumps(data)
         return token.decode()
+
+
 
     @staticmethod
     def check_set_password_token(token, user_id):

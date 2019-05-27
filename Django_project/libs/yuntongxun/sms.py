@@ -1,7 +1,9 @@
 # -*- coding:utf-8 -*-
 
-from .CCPRestSDK import REST
+# from .CCPRestSDK import REST
 import ssl
+
+from Django_project.libs.yuntongxun.CCPRestSDK import REST
 
 ssl._create_default_https_context = ssl._create_unverified_context  # 全局取消证书验证
 

@@ -56,6 +56,8 @@ class UserView(CreateAPIView):
     """
     serializer_class = serializers.CreateUserSerializer
 
+
+
 class SMSCodeTokenView(GenericAPIView):
     """
     根据账号和图片验证码，获取发送短信的token
@@ -77,6 +79,7 @@ class SMSCodeTokenView(GenericAPIView):
         mobile = re.sub(r'(\d{3})\d{4}(\d{3})', r'\1****\2', user.mobile)
         return Response({'mobile': mobile, 'access_token': access_token})
 
+
 class PasswordTokenView(GenericAPIView):
     """
     用户帐号设置密码的token
@@ -96,6 +99,8 @@ class PasswordTokenView(GenericAPIView):
         access_token = user.generate_set_password_token()
 
         return Response({'user_id': user.id, 'access_token': access_token})
+
+
 
 class PasswordView(mixins.UpdateModelMixin, GenericAPIView):
     """
