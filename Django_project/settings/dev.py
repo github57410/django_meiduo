@@ -6,6 +6,8 @@
    Change Activity:
                    2019/5/22:
 """
+import datetime
+
 __author__ = 'gao_帅帅'
 
 """
@@ -55,9 +57,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'users.apps.UsersConfig',
+    'verifications.apps.VerificationsConfig',
 ]
 
 MIDDLEWARE = [
+    # 'django.middleware.cache.UpdateCacheMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -66,6 +70,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 
@@ -80,6 +85,8 @@ CORS_ORIGIN_WHITELIST = (
 # 允许携带cookie
 CORS_ALLOW_CREDENTIALS = True
 
+# Django认证系统使用的模型类
+AUTH_USER_MODEL = 'users.User'
 
 ROOT_URLCONF = 'Django_project.urls'
 
@@ -104,7 +111,25 @@ TEMPLATES = [
 REST_FRAMEWORK = {
     # 异常处理
     'EXCEPTION_HANDLER': 'Django_project.utils.exceptions.exception_handler',
+    # JWT认证机制
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
 }
+
+# 设置JWT token有效期
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'users.utils.jwt_response_payload_handler',
+}
+
+# 使用自定义的认证后端
+AUTHENTICATION_BACKENDS = [
+    'users.utils.UsernameMobileAuthBackend',
+]
+
 
 WSGI_APPLICATION = 'Django_project.wsgi.application'
 
@@ -135,14 +160,21 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1/0",
+        "LOCATION": "redis://127.0.0.1:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "session": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1/1",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    "verify_codes": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -152,11 +184,8 @@ CACHES = {
 
 # django默认访问127.0.0.1地址,如果要用api.meiduo.com请求接口会失败
 # 添加后端接口地址  更改django访问地址
-ALLOWED_HOSTS = ['api.meiduo.com']
-
-
-# Django认证系统使用的模型类
-AUTH_USER_MODEL = 'users.User'
+ALLOWED_HOSTS = ['api.meiduo.com',
+                 '127.0.0.1']
 
 
 # Password validation
@@ -231,7 +260,7 @@ LOGGING = {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(os.path.dirname(BASE_DIR), "logs/meiduo.log"),  # 日志文件的位置
-            'maxBytes': 300 * 1024 * 1024,
+            'maxBytes': 500 * 1024 * 1024,  # 500m
             'backupCount': 10,
             'formatter': 'verbose'
         },
