@@ -6,16 +6,13 @@
    Change Activity:
                    2019/5/23:
 """
-# from rest_framework_jwt.serializers import User
-from Django_project.apps.users.models import User
-
 __author__ = 'gao_帅帅'
 import re
-
 from Django_project.apps.users.utils import get_user_by_account
-from django_redis import get_redis_connection
-from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
+from rest_framework import serializers
+from .models import User
+from django_redis import get_redis_connection
 
 
 class CreateUserSerializer(serializers.ModelSerializer):

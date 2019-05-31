@@ -1,19 +1,15 @@
 import re
-
 from django.shortcuts import render
-
 # Create your views here.
-
 # users/views.py
 from rest_framework import status, mixins
 from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from Django_project.apps.users import serializers
-from Django_project.apps.users.models import User
 from Django_project.apps.users.utils import get_user_by_account
 from Django_project.apps.verifications.serializers import CheckImageCodeSerialzier
+from .models import User
 
 
 class UsernameCountView(APIView):

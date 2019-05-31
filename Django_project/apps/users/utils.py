@@ -6,12 +6,12 @@
    Change Activity:
                    2019/5/23:
 """
+__author__ = 'gao_帅帅'
 import re
 from django.contrib.auth.backends import ModelBackend
+from .models import User
 
-from Django_project.apps.users.models import User
 
-__author__ = 'gao_帅帅'
 
 def jwt_response_payload_handler(token, user=None, request=None):
     """

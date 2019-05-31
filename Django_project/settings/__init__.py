@@ -7,3 +7,4 @@
                    2019/5/22:
 """
 __author__ = 'gao_帅帅'
+import Django_project.settings.dev

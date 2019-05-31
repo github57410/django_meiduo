@@ -1,13 +1,12 @@
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
-# from Django_project.settings import dev
-from Django_project.apps.users import constants
+# from Django_project import settings
+# 导入django系统默认的配置文件
+from django.conf import settings
+from . import constants
 # 在User模型类中实现使用TimedJSONWebSignatureSerializer可以生成带有有效期的token
 from itsdangerous import TimedJSONWebSignatureSerializer as TJWSSerializer, BadData
 # 导入django系统默认的配置文件
-from django.conf import settings
 
 
 class User(AbstractUser):
@@ -25,7 +24,7 @@ class User(AbstractUser):
         生成发送短信验证码的token
         """
         # itsdangerous模型实例,第一个参数为配置密钥,第二个为过期时间
-        serializer = TJWSSerializer(dev.SECRET_KEY, expires_in=constants.SEND_SMS_TOKEN_EXPIRES)
+        serializer = TJWSSerializer(settings.SECRET_KEY, expires_in=constants.SEND_SMS_TOKEN_EXPIRES)
         data = {
             'mobile': self.mobile
         }
@@ -37,7 +36,7 @@ class User(AbstractUser):
         """
         检验发送短信验证码的token
         """
-        serializer = TJWSSerializer(dev.SECRET_KEY, expires_in=constants.SEND_SMS_TOKEN_EXPIRES)
+        serializer = TJWSSerializer(settings.SECRET_KEY, expires_in=constants.SEND_SMS_TOKEN_EXPIRES)
         try:
             data = serializer.loads(token)
         except BadData:
@@ -49,7 +48,7 @@ class User(AbstractUser):
         """
         生成修改密码的token
         """
-        serializer = TJWSSerializer(dev.SECRET_KEY, expires_in=constants.SET_PASSWORD_TOKEN_EXPIRES)
+        serializer = TJWSSerializer(settings.SECRET_KEY, expires_in=constants.SET_PASSWORD_TOKEN_EXPIRES)
         # 模型类
         data = {'user_id': self.id }
         token = serializer.dumps(data)
@@ -62,7 +61,7 @@ class User(AbstractUser):
         """
         检验设置密码的token
         """
-        serializer = TJWSSerializer(dev.SECRET_KEY, expires_in=constants.SET_PASSWORD_TOKEN_EXPIRES)
+        serializer = TJWSSerializer(settings.SECRET_KEY, expires_in=constants.SET_PASSWORD_TOKEN_EXPIRES)
         try:
             data = serializer.loads(token)
         except BadData:

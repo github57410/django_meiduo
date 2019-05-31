@@ -41,6 +41,11 @@ SECRET_KEY = 'x&pqg2=pmdak17+gu#d+d+qinecykqiqpg5gx^8rc+7^*p-hf4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# django默认访问127.0.0.1地址,如果要用api.meiduo.com请求接口会失败
+# 添加后端接口地址  更改django访问地址  允许的域名访问
+ALLOWED_HOSTS = ['api.meiduo.com',
+                 '127.0.0.1',
+                 'localhost']
 
 # Application definition
 # from Django_project.apps import users
@@ -52,51 +57,35 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'django_crontab',
-    'corsheaders',
     'rest_framework',
+    'corsheaders',
     'users.apps.UsersConfig',
     'verifications.apps.VerificationsConfig',
-    'django.contrib.sites',
+    # 'ckeditor',  # 富文本编辑器
+    # 'ckeditor_uploader',  # 富文本编辑器上传图片模块
+    # 'django_crontab',  # 定时任务
+    # 'haystack',
 
 ]
 
 MIDDLEWARE = [
-    # 'django.middleware.cache.UpdateCacheMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
-
-# CORS  添加白名单
-CORS_ORIGIN_WHITELIST = (
-    '127.0.0.1:8080',
-    'localhost:8080',
-    'www.meiduo.com:8080',
-    '127.0.0.1:8000',
-    'api.meiduo.com:8000'
-)
-
-# 允许携带cookie
-CORS_ALLOW_CREDENTIALS = True
-
-# Django认证系统使用的模型类
-AUTH_USER_MODEL = 'users.User'
-
 ROOT_URLCONF = 'Django_project.urls'
+
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, '../../templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, '../../templates')] ,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -109,38 +98,7 @@ TEMPLATES = [
     },
 ]
 
-# 异常
-REST_FRAMEWORK = {
-    # 异常处理
-    'EXCEPTION_HANDLER': 'Django_project.utils.exceptions.exception_handler',
-    # JWT认证机制
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ),
-}
-
-# 设置JWT token有效期
-JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
-    'JWT_RESPONSE_PAYLOAD_HANDLER': 'users.utils.jwt_response_payload_handler',
-}
-
-# 使用自定义的认证后端
-AUTHENTICATION_BACKENDS = [
-    'users.utils.UsernameMobileAuthBackend',
-]
-
-# qq登录参数
-# QQ_CLIENT_ID = '101474184'
-# QQ_CLIENT_SECRET = 'c6ce949e04e12ecc909ae6a8b09b637c'
-# QQ_REDIRECT_URI = 'http://www.meiduo.site:8080/oauth_callback.html'
-# QQ_STATE = '/'
-
-
 WSGI_APPLICATION = 'Django_project.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -164,41 +122,6 @@ DATABASES = {
     }
 }
 
-# Redis数据库设置
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/0",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    },
-    "session": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    },
-    "verify_codes": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/2",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
-}
-
-
-# django默认访问127.0.0.1地址,如果要用api.meiduo.com请求接口会失败
-# 添加后端接口地址  更改django访问地址
-ALLOWED_HOSTS = ['api.meiduo.com',
-                 '127.0.0.1']
-
-
-# Password validation
-# https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -213,7 +136,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -233,12 +155,52 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-
 STATIC_URL = '/static/'
 
+# Redis数据库设置
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://:123@127.0.0.1:6379/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    "session": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://:123@127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    # 存储短信验证码
+    "verify_codes": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://:123@127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    # 商品浏览记录
+    "history": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        # redis密码 123  "LOCATION": "redis://:你的密码@服务器地址:6379/0",
+        "LOCATION": "redis://:123@127.0.0.1:6379/3",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+}
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "session"
+
+# DRF扩展
+REST_FRAMEWORK_EXTENSIONS = {
+    # 缓存时间
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 60 * 60,
+    # 缓存存储
+    'DEFAULT_USE_CACHE': 'default',
+}
 
 # 日志信息
 LOGGING = {
@@ -268,7 +230,7 @@ LOGGING = {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(os.path.dirname(BASE_DIR), "logs/meiduo.log"),  # 日志文件的位置
-            'maxBytes': 500 * 1024 * 1024,  # 500m
+            'maxBytes': 500 * 1024 * 1024,  # 500M
             'backupCount': 10,
             'formatter': 'verbose'
         },
@@ -282,4 +244,57 @@ LOGGING = {
     }
 }
 
+# 异常
+REST_FRAMEWORK = {
+    # 异常处理
+    'EXCEPTION_HANDLER': 'Django_project.utils.exceptions.exception_handler',
+    # JWT认证机制
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
 
+# 设置JWT token有效期
+JWT_AUTH = {
+    # JWT口令过期时间
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'users.utils.jwt_response_payload_handler',
+}
+
+# CORS  添加白名单--跨域访问
+CORS_ORIGIN_WHITELIST = (
+    '127.0.0.1:8080',
+    'localhost:8080',
+    'www.meiduo.com:8080',
+    '127.0.0.1:8000',
+    'api.meiduo.com:8000'
+)
+
+# 允许携带cookie
+CORS_ALLOW_CREDENTIALS = True
+
+# Django认证系统使用的模型类
+AUTH_USER_MODEL = 'users.User'
+
+
+# 使用自定义的认证后端
+AUTHENTICATION_BACKENDS = [
+    'users.utils.UsernameMobileAuthBackend',
+]
+
+# QQ登录参数
+QQ_CLIENT_ID = '101474184'  # APP_ID
+QQ_CLIENT_SECRET = 'c6ce949e04e12ecc909ae6a8b09b637c'  # APP_Key
+QQ_REDIRECT_URI = 'http://127.0.0.1:8000/oauth_callback.html'  # 网站回调域
+QQ_STATE = '/'  # 登陆成功返回的地址
+
+
+
+# Password validation
+# https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.2/howto/static-files/

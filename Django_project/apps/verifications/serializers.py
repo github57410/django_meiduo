@@ -6,7 +6,8 @@
    Change Activity:
                    2019/5/22:
 """
-from Django_project.apps.users.models import User
+# from Django_project.apps.users.models import User
+from rest_framework_jwt.serializers import User
 
 __author__ = 'gao_帅帅'
 
